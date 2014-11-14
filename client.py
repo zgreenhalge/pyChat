@@ -1,4 +1,4 @@
-from tkinter import *
+from Tkinter import *
 from datetime import datetime
 import socket
 import threading
@@ -8,8 +8,8 @@ displayLock = threading.RLock()
 timeStamps = True
 line = 1
 commands = {}
-outbound = {}
-inbound = {}
+outbound = []
+inbound = []
 current = None
 entryWidget = None
 display = None
@@ -39,14 +39,13 @@ def proceed():
 		return
 
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	sock.settimeout(3)
+	sock.settimeout(1.75)
 	
 	try:
 		#FREEZES IF IT CANNOT CONNECT IMMEDIATELY
 		#SOMETHING BETTER?
 		sock.connect((serv, int(port)))
 	except Exception as e:
-		print(e)
 		miscStr.set("Unable to connect to " + serv)
 		return
 
@@ -102,44 +101,44 @@ def textEntry(event):
 		commands[entryArr[0]](entryArr)
 	else:
 		if len(entry) > 0:
-			line = printMessage(myName, entry)
+			line = printMessage(entry)
 	entryWidget.delete(0, END)
 
-def printMessage(user, message):
+def printMessage(message):
 	displayLock.acquire()
 	display.config(state=NORMAL) 
 	if timeStamps == TRUE:
 		time = datetime.now().strftime('%H:%M:%S')
-		display.insert(END, user + " [" + time + "]: " + message + "\n")
+		display.insert(END,"[" + time + "] " + message + "\n")
 	else:
-		display.insert(END, user + ": " + message + "\n")
+		display.insert(END, message + "\n")
 	display.config(state=DISABLED) 
 	displayLock.release()
 	return line + 1
 
-def printStyledMessage(user, message, style):
+def printStyleMessage(message, style):
 	displayLock.acquire()
 	display.config(state=NORMAL) 
 	if timeStamps == TRUE:
 		time = datetime.now().strftime('%H:%M:%S')
-		display.insert(END, user + " [" + time + "]: " + message + "\n", (style))
+		display.insert(END, "[" + time + "]: " + message + "\n", (style))
 	else:
-		display.insert(END, user + ": " + message + "\n", (style))
+		display.insert(END, message + "\n", (style))
 	display.config(state=DISABLED) 
 	displayLock.release()
 	return line + 1
 
-def printSysMessage(message):
-	displayLock.acquire()
-	display.config(state=NORMAL) 
-	if timeStamps == TRUE:
-		time = datetime.now().strftime('%H:%M:%S')
-		display.insert(END, "[" + time + "]: " + message + "\n", ("sysMessage"))
-	else:
-		display.insert(END, message + "\n", ("sysMessage"))
-	display.config(state=DISABLED) 
-	displayLock.release()
-	return line + 1
+# def printSysMessage(message):
+# 	displayLock.acquire()
+# 	display.config(state=NORMAL) 
+# 	if timeStamps == TRUE:
+# 		time = datetime.now().strftime('%H:%M:%S')
+# 		display.insert(END, "[" + time + "]: " + message + "\n", ("sysMessage"))
+# 	else:
+# 		display.insert(END, message + "\n", ("sysMessage"))
+# 	display.config(state=DISABLED) 
+# 	displayLock.release()
+# 	return line + 1
 
 def exit(entry):
 	if len(entry) > 1:
@@ -160,17 +159,17 @@ def processCommand(command, args):
 	raise Error("processCommand not implemented yet")
 
 def greeting():
-	line = printSysMessage("Hello! Welcome to the chat.")
-	line = printSysMessage("You are connected to " + serv + " as " + myName)
-	line = printSysMessage("To exit, type !exit")
-	line = printSysMessage("For more commands, type !help")
+	line = printStyleMessage("Hello! Welcome to the chat.", ("sysMessage"))
+	line = printStyleMessage("You are connected to " + serv + " as " + myName, ("sysMessage"))
+	line = printStyleMessage("To exit, type !exit", ("sysMessage"))
+	line = printStyleMessage("For more commands, type !help", ("sysMessage"))
 
 def helpDesk(entry):
 	if len(entry) == 1:
-		line = printSysMessage("!exit  -  exit the chat")
-		line = printSysMessage("!mute ")
+		line = printStyleMessage("!exit  -  exit the chat")
+		line = printStyleMessage("!mute ")
 	else:
-		line = printSysMessage("Proper syntax: !help")
+		line = printStyleMessage("Proper syntax: !help")
 
 def quit(event):
 	current.quit()

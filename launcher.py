@@ -1,4 +1,4 @@
-from tkinter import *
+from Tkinter import *
 import sys
 import threading
 import socket
