@@ -102,7 +102,7 @@ commands["!name"] = name
 
 signal.signal(signal.SIGINT, signal_handler)
 
-logging.basicConfig(filename=time.strftime("SERVER %m-%d-%Y")+'.log', level=logging.INFO, format="%(asctime)s %(levelname)s LINE %(lineno)s: %(message)s")
+logging.basicConfig(filename=time.strftime("SERVER %m-%d-%Y.log"), level=logging.INFO, format="%(asctime)s %(levelname)s LINE %(lineno)s: %(message)s")
 logger = logging.getLogger("serv")
 logger.addHandler(logging.StreamHandler())
 

@@ -1,4 +1,4 @@
-from tkinter import *
+from Tkinter import *
 from datetime import datetime
 import socket
 import threading
@@ -161,7 +161,6 @@ def process(message):
 		if tokens[0] in serverCommands:
 			serverCommands[tokens[0]](tokens)
 			return
-		serverMessage(message, ("sysMessage"))
 		return;
 	printMessage(message)
 	
@@ -178,6 +177,15 @@ def helpDesk(tokens):
 		printStyleMessage("!mute ")
 	else:
 		printStyleMessage("Proper syntax: !help")
+
+def sendName(tokens):
+	oLock.acquire()
+	outbound.append(" ".join(tokens))
+	oLock.release()
+
+def recvName(tokens):
+	myName = " ".join(tokens[1:])
+	printStyleMessage("Name set to: " + myName, ("sysMessage"))
 
 def quit(event):
 	current.quit()
@@ -200,17 +208,10 @@ def listen(socket):
 			logger.debug(e)
 
 def serverMessage(tokens):
-	message = ""
-	started = False
-	for t in tokens:
-		if(not started):
-			started = True
-			continue
-		message += tokens + " "
-	printStyleMessage(message, ("sysMessage"))
+	printStyleMessage(" ".join(tokens[1:], ("sysMessage")))
 
 
-logging.basicConfig(filename=time.strftime("CLIENT %m-%d-%Y")+'.log', level=logging.INFO, format="%(asctime)s %(levelname)s LINE %(lineno)s: %(message)s")
+logging.basicConfig(filename=time.strftime("CLIENT %m-%d-%Y.log"), level=logging.INFO, format="%(asctime)s %(levelname)s LINE %(lineno)s: %(message)s")
 logger = logging.getLogger("serv")
 logger.addHandler(logging.StreamHandler())
 
