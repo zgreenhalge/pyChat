@@ -11,7 +11,8 @@ displayLock = threading.Lock()
 iLock = threading.Lock()
 oLock = threading.Lock()
 timeStamps = True
-commands = {}
+clientCommands = {}
+serverCommands = {}
 outbound = []
 inbound = []
 current = None
@@ -107,8 +108,8 @@ def proceedOnKey(event):
 def textEntry(event):
 	entry = entryWidget.get()
 	entryArr = entry.split()
-	if entryArr[0] in commands:
-		commands[entryArr[0]](entryArr)
+	if entryArr[0] in clientCommands:
+		clientCommands[entryArr[0]](entryArr)
 	else:
 		if len(entry) > 0:
 			oLock.acquire()
@@ -139,17 +140,6 @@ def printStyleMessage(message, style):
 	display.config(state=DISABLED) 
 	displayLock.release()
 
-# def printSysMessage(message):
-# 	displayLock.acquire()
-# 	display.config(state=NORMAL) 
-# 	if timeStamps == TRUE:
-# 		time = datetime.now().strftime('%H:%M:%S')
-# 		display.insert(END, "[" + time + "]: " + message + "\n", ("sysMessage"))
-# 	else:
-# 		display.insert(END, message + "\n", ("sysMessage"))
-# 	display.config(state=DISABLED) 
-# 	displayLock.release()
-
 def exit(tokens):
 	if len(tokens) > 1:
 		printSysMessage("Proper syntax: !exit")
@@ -168,8 +158,8 @@ def validIp(address):
 def process(message):
 	tokens = message.split()
 	if tokens[0].startswith("!"):
-		if tokens[0] in commands:
-			commands[tokens[0]](tokens)
+		if tokens[0] in serverCommands:
+			serverCommands[tokens[0]](tokens)
 			return
 		serverMessage(message, ("sysMessage"))
 		return;
@@ -224,11 +214,14 @@ logging.basicConfig(filename=time.strftime("CLIENT %m-%d-%Y")+'.log', level=logg
 logger = logging.getLogger("serv")
 logger.addHandler(logging.StreamHandler())
 
-commands["!help"] = helpDesk
-commands["!exit"] = exit
-commands["!serv"] = serverMessage
-commands["!disconnect"] = disconnect
-#figure out how names should be handled - will require separate funcs for each side?
+clientCommands["!help"] = helpDesk
+clientCommands["!exit"] = exit
+clientCommands["!name"] = sendName
+clientCommands["!disconnect"] = disconnect
+
+serverCommands["!serv"] = serverMessage
+serverCommands["!name"] = recvName
+serverCommands["!disconnect"] = disconnect
 
 login = Tk()
 login.title("Log In")

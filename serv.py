@@ -4,6 +4,7 @@ import time
 import socket
 import logging
 import threading
+import runTimer
 
 HOST = ''	#all available interfaces
 PORT = 1234
@@ -13,8 +14,12 @@ commands = {}
 mLock = threading.Lock()
 sLock = threading.Lock()
 count = 0
+recieved = 0
+sent = 0
+line = "="*40
 
 def signal_handler(signal, frame):
+	logger.warning(line)
 	logger.warning("Interrupt recieved")
 	exit()
 
@@ -42,8 +47,16 @@ def exit():
 			logger.info("Closing connection to " + str(s[0].getpeername()[0]) + " (" + s[1] + ")")
 			s[0].sendall("!disconnect".encode())
 			s[0].close()
+			print
 	sLock.release()
 	sock.close()
+	logger.info("")
+	logger.info(line)
+	logger.info("Connections made:  " + str(count))
+	logger.info("Messages recieved: " + str(recieved))
+	logger.info("Messages sent:     " + str(sent))
+	logger.info(line)
+	logger.info("")
 	logger.info("Server closed. Goodbye!")
 	sys.exit(0)
 
@@ -55,7 +68,8 @@ def clientHandler(sock):
 		while True:
 			data = sock.recv(4096).decode()
 			if len(data) > 0:
-				print(data)
+				print str(data)
+				recieved += 1
 				process(data, sock)
 	except Exception:
 		pass
@@ -126,4 +140,5 @@ while True:
 		mes = messageQueue.pop(0)
 		for c in connected:
 			c[0].sendall(mes.encode())
+		sent += 1
 	mLock.release()
