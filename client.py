@@ -1,23 +1,28 @@
-from Tkinter import *
+from tkinter import *
 from datetime import datetime
 import socket
 import threading
+import logging
+import time
+import traceback
 
 
-displayLock = threading.RLock()
+displayLock = threading.Lock()
+iLock = threading.Lock()
+oLock = threading.Lock()
 timeStamps = True
-line = 1
 commands = {}
 outbound = []
 inbound = []
 current = None
 entryWidget = None
 display = None
+sock = None
 serv = ""
 myName = ""
 
 def proceed():
-	global serv, myName, entryWidget, display, current
+	global serv, myName, entryWidget, display, current, sock
 	myName = nameEntry.get()
 	serv = serverEntry.get()
 	port = 1234
@@ -46,6 +51,7 @@ def proceed():
 		#SOMETHING BETTER?
 		sock.connect((serv, int(port)))
 	except Exception as e:
+		logger.warning(str(e))
 		miscStr.set("Unable to connect to " + serv)
 		return
 
@@ -81,13 +87,17 @@ def proceed():
 	entryWidget.focus_get()
 	entryWidget.focus_set()
 
-	#connectionThread = clientConnector.ConnectorThread(name, socket)
-	#connectionThread.start()
-	#connectionThread.setGUI(self)
+	#threading.start_new_thread(clientHandler,(conn,))
+	#threading.start_new_thread(listen,(sock,))
+	t = threading.Thread(target=listen, args=(sock,), name="ListenerThread")
+	t.start()
+	logger.info("Listen thread started")
 	login.destroy()
+	logger.info("Login window destroyed")
 
 	greeting()
 	current = root
+	logger.info("Starting chat window...")
 	root.mainloop()
 
 def proceedOnKey(event):
@@ -101,7 +111,10 @@ def textEntry(event):
 		commands[entryArr[0]](entryArr)
 	else:
 		if len(entry) > 0:
-			line = printMessage(entry)
+			oLock.acquire()
+			outbound.append(entry)
+			oLock.release()
+			printMessage(entry)
 	entryWidget.delete(0, END)
 
 def printMessage(message):
@@ -114,7 +127,6 @@ def printMessage(message):
 		display.insert(END, message + "\n")
 	display.config(state=DISABLED) 
 	displayLock.release()
-	return line + 1
 
 def printStyleMessage(message, style):
 	displayLock.acquire()
@@ -126,7 +138,6 @@ def printStyleMessage(message, style):
 		display.insert(END, message + "\n", (style))
 	display.config(state=DISABLED) 
 	displayLock.release()
-	return line + 1
 
 # def printSysMessage(message):
 # 	displayLock.acquire()
@@ -138,10 +149,9 @@ def printStyleMessage(message, style):
 # 		display.insert(END, message + "\n", ("sysMessage"))
 # 	display.config(state=DISABLED) 
 # 	displayLock.release()
-# 	return line + 1
 
-def exit(entry):
-	if len(entry) > 1:
+def exit(tokens):
+	if len(tokens) > 1:
 		printSysMessage("Proper syntax: !exit")
 	else:
 		current.quit()
@@ -155,21 +165,29 @@ def validIp(address):
     except:
         return False
 
-def processCommand(command, args):
-	raise Error("processCommand not implemented yet")
+def process(message):
+	tokens = message.split()
+	if tokens[0].startswith("!"):
+		if tokens[0] in commands:
+			commands[tokens[0]](tokens)
+			return
+		serverMessage(message, ("sysMessage"))
+		return;
+	printMessage(message)
+	
 
 def greeting():
-	line = printStyleMessage("Hello! Welcome to the chat.", ("sysMessage"))
-	line = printStyleMessage("You are connected to " + serv + " as " + myName, ("sysMessage"))
-	line = printStyleMessage("To exit, type !exit", ("sysMessage"))
-	line = printStyleMessage("For more commands, type !help", ("sysMessage"))
+	printStyleMessage("Hello! Welcome to the chat.", ("sysMessage"))
+	printStyleMessage("You are connected to " + serv + " as " + myName, ("sysMessage"))
+	printStyleMessage("To exit, type !exit", ("sysMessage"))
+	printStyleMessage("For more commands, type !help", ("sysMessage"))
 
-def helpDesk(entry):
-	if len(entry) == 1:
-		line = printStyleMessage("!exit  -  exit the chat")
-		line = printStyleMessage("!mute ")
+def helpDesk(tokens):
+	if len(tokens) == 1:
+		printStyleMessage("!exit  -  exit the chat")
+		printStyleMessage("!mute ")
 	else:
-		line = printStyleMessage("Proper syntax: !help")
+		printStyleMessage("Proper syntax: !help")
 
 def quit(event):
 	current.quit()
@@ -177,8 +195,40 @@ def quit(event):
 def grabFocus(event):
 	entryWidget.focus_set()
 
+def disconnect(tokens):
+	printStyleMessage("The server has terminated the connection.", ("sysMessage"))
+
+
+def listen(socket):
+	while True:
+		try:
+			data = socket.recv(4096).decode()
+			if len(data) > 0:
+				process(data)
+				logger.debug("Data received")
+		except Exception as e:
+			logger.debug(e)
+
+def serverMessage(tokens):
+	message = ""
+	started = False
+	for t in tokens:
+		if(not started):
+			started = True
+			continue
+		message += tokens + " "
+	printStyleMessage(message, ("sysMessage"))
+
+
+logging.basicConfig(filename=time.strftime("CLIENT %m-%d-%Y")+'.log', level=logging.INFO, format="%(asctime)s %(levelname)s LINE %(lineno)s: %(message)s")
+logger = logging.getLogger("serv")
+logger.addHandler(logging.StreamHandler())
+
 commands["!help"] = helpDesk
 commands["!exit"] = exit
+commands["!serv"] = serverMessage
+commands["!disconnect"] = disconnect
+#figure out how names should be handled - will require separate funcs for each side?
 
 login = Tk()
 login.title("Log In")
@@ -210,4 +260,5 @@ nameEntry.focus_get()
 nameEntry.focus_set()
 
 current = login
+logger.info("Starting up login window...")
 login.mainloop()

@@ -22,6 +22,7 @@ def process(message, socket):
 	tokens = message.split()
 	if tokens[0].startswith("!"):
 		if tokens[0] in commands:
+			tokens.append(socket)
 			commands[tokens[0]](tokens)
 			return
 
@@ -39,7 +40,7 @@ def exit():
 	for s in connected:
 		if s[0] != None:
 			logger.info("Closing connection to " + str(s[0].getpeername()[0]) + " (" + s[1] + ")")
-			s[0].sendall("!disconnect")
+			s[0].sendall("!disconnect".encode())
 			s[0].close()
 	sLock.release()
 	sock.close()
@@ -52,15 +53,42 @@ def clientHandler(sock):
 	count += 1
 	try:
 		while True:
-			data = sock.recv(4096)
+			data = sock.recv(4096).decode()
 			if len(data) > 0:
+				print(data)
 				process(data, sock)
-	except CommunicationException:
+	except Exception:
 		pass
+
+def ping(tokens):
+	if len(tokens) == 2:
+		temp = "!serv Connection to " + socket.gethostbyname(hostName) + " is alive"
+		tokens[1].sendall(temp.encode())
+
+def name(tokens):
+	length = len(tokens)
+	if length < 3:
+		for s in connected:
+			if s[0] == tokens[length-1]:
+				ret = "!name " + s[1]
+				s[0].sendall(ret.encode())
+	name = " ".join(tokens[1:length-1])
+	for s in connected:
+		if s[1] == name:
+			s[0].sendall("!serv That name is already taken.".encode())
+			return
+	for s in connected:
+		if s[0] == tokens[length-1]:
+			s[1] = name
+			ret = "!serv Your name has been set to " + name
+			s[0].sendall(ret.encode())
+
+commands["!ping"] = ping
+commands["!name"] = name
 
 signal.signal(signal.SIGINT, signal_handler)
 
-logging.basicConfig(filename=time.strftime("%m-%d-%Y")+'.log', level=logging.INFO, format="%(levelname)s %(asctime)s")
+logging.basicConfig(filename=time.strftime("SERVER %m-%d-%Y")+'.log', level=logging.INFO, format="%(asctime)s %(levelname)s LINE %(lineno)s: %(message)s")
 logger = logging.getLogger("serv")
 logger.addHandler(logging.StreamHandler())
 
@@ -89,13 +117,13 @@ while True:
 		sLock.acquire()
 		connected.append((conn, user))
 		sLock.release()
-		threading.start_new_thread(clientHandler,(conn,)) 
+		threading.Thread(target=clientHandler, args=(conn,), name = "ClientThread-"+str(count)).start()
+		#threading.start_new_thread(clientHandler,(conn,)) 
 	except:
 		logger.debug("sock.accept() timeout reached")
 	mLock.acquire()
 	if len(messageQueue) > 0:
 		mes = messageQueue.pop(0)
 		for c in connected:
-			c[0].sendall(mes)
+			c[0].sendall(mes.encode())
 	mLock.release()
-	#do nothing

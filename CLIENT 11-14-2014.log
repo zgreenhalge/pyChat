@@ -1,0 +1,115 @@
+1415998311.630565 INFO LINE 251: Starting up login window...
+1415998408.637295 INFO LINE 252: Starting up login window...
+1415998422.548231 WARNING LINE 53: timed out
+1415998655.364513 INFO LINE 253: Starting up login window...
+1415998667.587785 INFO LINE 92: Listen thread started
+1415998667.619036 INFO LINE 94: Login window destroyed
+1415998667.634661 INFO LINE 98: Strating chat window...
+1415998994.508985 INFO LINE 252: Starting up login window...
+1415999005.274003 INFO LINE 91: Listen thread started
+1415999005.305253 INFO LINE 93: Login window destroyed
+1415999005.320877 INFO LINE 97: Strating chat window...
+1415999123.605204 INFO LINE 253: Starting up login window...
+1415999129.807238 INFO LINE 91: Listen thread started
+1415999129.854115 INFO LINE 93: Login window destroyed
+1415999129.869739 INFO LINE 97: Starting chat window...
+1415999129.869739 INFO LINE 98: MainThread
+1415999178.043143 INFO LINE 253: Starting up login window...
+1415999186.026105 INFO LINE 91: Listen thread started
+1415999186.057375 INFO LINE 93: Login window destroyed
+1415999186.088606 INFO LINE 97: Starting chat window...
+1415999272.245426 INFO LINE 253: Starting up login window...
+1415999277.048282 INFO LINE 91: Listen thread started
+1415999277.079533 INFO LINE 93: Login window destroyed
+1415999277.110784 INFO LINE 97: Starting chat window...
+1415999277.110784 INFO LINE 98: Thread 6788
+1415999412.513567 INFO LINE 253: Starting up login window...
+1415999418.050871 INFO LINE 91: Listen thread started
+1415999418.097745 INFO LINE 93: Login window destroyed
+1415999418.113371 INFO LINE 97: Starting chat window...
+1415999418.113371 INFO LINE 98: Thread 6492
+1415999613.811063 INFO LINE 254: Starting up login window...
+1415999620.697776 INFO LINE 92: Listen thread started
+1415999620.744651 INFO LINE 94: Login window destroyed
+1415999620.775902 INFO LINE 98: Starting chat window...
+1415999620.775902 INFO LINE 99: Thread 560
+1415999871.562769 INFO LINE 257: Starting up login window...
+1415999883.414689 INFO LINE 96: Listen thread started
+1415999883.461543 INFO LINE 98: Login window destroyed
+1415999883.477168 INFO LINE 102: Starting chat window...
+1416000037.633856 INFO LINE 254: Starting up login window...
+1416000044.050685 INFO LINE 93: Listen thread started
+1416000044.097561 INFO LINE 95: Login window destroyed
+1416000044.113186 INFO LINE 99: Starting chat window...
+1416000093.181425 INFO LINE 254: Starting up login window...
+1416000098.794096 INFO LINE 93: Listen thread started
+1416000098.840974 INFO LINE 95: Login window destroyed
+1416000098.872222 INFO LINE 99: Starting chat window...
+1416000100.544139 ERROR LINE 203: timed out
+Traceback (most recent call last):
+  File "client.py", line 198, in listen
+    data = socket.recv(4096)
+socket.timeout: timed out
+1416000169.774229 INFO LINE 254: Starting up login window...
+1416000175.667929 INFO LINE 93: Listen thread started
+1416000175.706217 INFO LINE 95: Login window destroyed
+1416000175.721844 INFO LINE 99: Starting chat window...
+1416000177.432392 ERROR LINE 203: timed out
+Traceback (most recent call last):
+  File "client.py", line 198, in listen
+    data = socket.recv(4096)
+socket.timeout: timed out
+1416000179.19015 ERROR LINE 203: timed out
+Traceback (most recent call last):
+  File "client.py", line 198, in listen
+    data = socket.recv(4096)
+socket.timeout: timed out
+1416000180.945232 ERROR LINE 203: timed out
+Traceback (most recent call last):
+  File "client.py", line 198, in listen
+    data = socket.recv(4096)
+socket.timeout: timed out
+1416000182.695247 ERROR LINE 203: timed out
+Traceback (most recent call last):
+  File "client.py", line 198, in listen
+    data = socket.recv(4096)
+socket.timeout: timed out
+1416000184.459558 ERROR LINE 203: timed out
+Traceback (most recent call last):
+  File "client.py", line 198, in listen
+    data = socket.recv(4096)
+socket.timeout: timed out
+1416000186.217837 ERROR LINE 203: timed out
+Traceback (most recent call last):
+  File "client.py", line 198, in listen
+    data = socket.recv(4096)
+socket.timeout: timed out
+1416000187.970291 ERROR LINE 203: timed out
+Traceback (most recent call last):
+  File "client.py", line 198, in listen
+    data = socket.recv(4096)
+socket.timeout: timed out
+1416000189.734281 ERROR LINE 203: timed out
+Traceback (most recent call last):
+  File "client.py", line 198, in listen
+    data = socket.recv(4096)
+socket.timeout: timed out
+1416000191.498142 ERROR LINE 203: timed out
+Traceback (most recent call last):
+  File "client.py", line 198, in listen
+    data = socket.recv(4096)
+socket.timeout: timed out
+1416000193.249911 ERROR LINE 203: timed out
+Traceback (most recent call last):
+  File "client.py", line 198, in listen
+    data = socket.recv(4096)
+socket.timeout: timed out
+1416000195.015416 ERROR LINE 203: timed out
+Traceback (most recent call last):
+  File "client.py", line 198, in listen
+    data = socket.recv(4096)
+socket.timeout: timed out
+1416001522.816396 INFO LINE 254: Starting up login window...
+1416001528.85061 INFO LINE 93: Listen thread started
+1416001528.888106 INFO LINE 95: Login window destroyed
+1416001528.928746 INFO LINE 99: Starting chat window...
