@@ -68,7 +68,7 @@ def clientHandler(sock):
 		while True:
 			data = sock.recv(4096).decode()
 			if len(data) > 0:
-				print str(data)
+				print(data)
 				recieved += 1
 				process(data, sock)
 	except Exception:
