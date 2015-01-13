@@ -2,16 +2,17 @@ import atexit
 import time
 
 def secondsToStr(t):
-    return time.strptime(str(t), "%d:%02d:%02d.%03d")
+    print "*"*25 + str(t)
+    return time.strptime("%H:%M:%S")
 
 line = "="*40
 def log(s, elapsed=None):
-    print(line)
-    print(secondsToStr(time.clock()), '-', s)
+    print line
+    print time.ctime() + ' - ' + s
     if elapsed:
-        print("Elapsed time:", elapsed)
-    print(line)
-    print()
+        print "Elapsed time: " + elapsed
+    print line
+    print 
 
 def endlog():
     end = time.clock()
@@ -19,7 +20,7 @@ def endlog():
     log("End Program", secondsToStr(elapsed))
 
 def now():
-    return secondsToStr(time.clock())
+    return time.ctime()
 
 start = time.clock()
 atexit.register(endlog)
