@@ -1,9 +1,14 @@
 import atexit
 import time
 
+#Provides a timing framework for a python program
+#Will automatically record the time on running the script
+#And registers itself for execution on interpreter termination
+
 def secondsToStr(t):
-    print "*"*25 + str(t)
-    return time.strptime("%H:%M:%S")
+    m, s = divmod(t, 60)
+    h, m = divmod(m, 60)
+    return "%d:%02d:%02d" % (h, m, s)
 
 line = "="*40
 def log(s, elapsed=None):

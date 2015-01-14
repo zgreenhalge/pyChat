@@ -108,6 +108,7 @@ def proceedOnKey(event):
 def textEntry(event):
 	entry = entryWidget.get()
 	entryArr = entry.split()
+	print myName + entryArr[0]
 	if entryArr[0] in clientCommands:
 		clientCommands[entryArr[0]](entryArr)
 	else:
@@ -173,10 +174,11 @@ def greeting():
 
 def helpDesk(tokens):
 	if len(tokens) == 1:
-		printStyleMessage("!exit  -  exit the chat")
-		printStyleMessage("!mute ")
+		printStyleMessage("!exit  -  exit the chat", ("sysMessage"))
+		printStyleMessage("!mute ", ("sysMessage"))
+		printStyleMessage("!name  -  change your name", ("sysMessage"))
 	else:
-		printStyleMessage("Proper syntax: !help")
+		printStyleMessage("Proper syntax: !help", ("sysMessage"))
 
 def sendName(tokens):
 	oLock.acquire()
@@ -222,6 +224,7 @@ clientCommands["!disconnect"] = disconnect
 
 serverCommands["!serv"] = serverMessage
 serverCommands["!name"] = recvName
+serverCommands["!ping"] = 
 serverCommands["!disconnect"] = disconnect
 
 login = Tk()

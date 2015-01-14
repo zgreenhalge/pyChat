@@ -81,21 +81,25 @@ def ping(tokens):
 
 def name(tokens):
 	length = len(tokens)
-	if length < 3:
-		for s in connected:
-			if s[0] == tokens[length-1]:
-				ret = "!name " + s[1]
-				s[0].sendall(ret.encode())
-	name = " ".join(tokens[1:length-1])
+	if length < 2:
+		return
+	name = " ".join(tokens[1:length-1]) #Turn the name into a single string
+	#check for duplicate names
 	for s in connected:
 		if s[1] == name:
 			s[0].sendall("!serv That name is already taken.".encode())
 			return
+	#find the correct connection pair & set the name
 	for s in connected:
 		if s[0] == tokens[length-1]:
 			s[1] = name
-			ret = "!serv Your name has been set to " + name
+			ret = "!name " + name
 			s[0].sendall(ret.encode())
+
+def statusCheck(sleepLen=120):
+	time.sleep(sleepLen)
+	print line
+	print time.ctime() + ": " + len(connected) + " users online."
 
 commands["!ping"] = ping
 commands["!name"] = name
@@ -121,6 +125,7 @@ aboutStr = "(" + hostName + ") " + socket.gethostbyname(hostName) + ":" + str(PO
 
 sock.listen(5)
 logger.info(aboutStr + " is now listening for connections...")
+threading.Thread(target=statusCheck)
 
 while True:
 	try:
