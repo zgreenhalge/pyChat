@@ -11,22 +11,25 @@ def secondsToStr(t):
     return "%d:%02d:%02d" % (h, m, s)
 
 line = "="*40
-def log(s, elapsed=None):
-    print line
-    print time.ctime() + ' - ' + s
-    if elapsed:
-        print "Elapsed time: " + elapsed
-    print line
-    print 
+def log(s):
+    print(line)
+    print(time.ctime() + ' - ' + s)
+    if start:
+        dif = elapsed()
+        print("Elapsed time: " + secondsToStr(dif) + " (" + str(dif)[:16] + ")")
+    print(line)
+    print()
+
+start = time.clock()
+def elapsed():
+    return time.clock()-start
 
 def endlog():
-    end = time.clock()
-    elapsed = end-start
-    log("End Program", secondsToStr(elapsed))
+    log("End Program")
 
 def now():
     return time.ctime()
 
-start = time.clock()
 atexit.register(endlog)
 log("Start Program")
+

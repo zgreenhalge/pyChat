@@ -98,8 +98,9 @@ def name(tokens):
 
 def statusCheck(sleepLen=120):
 	time.sleep(sleepLen)
-	print line
-	print time.ctime() + ": " + len(connected) + " users online."
+	print(line)
+	print("Time online: " + runTimer.elapsed())
+	print(time.ctime() + ": " + len(connected) + " users online.")
 
 commands["!ping"] = ping
 commands["!name"] = name
