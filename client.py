@@ -101,10 +101,6 @@ def proceed():
 	logger.info("Starting chat window...")
 	root.mainloop()
 
-def proceedOnKey(event):
-	miscStr.set("Connecting...")
-	proceed()
-
 def textEntry(event):
 	entry = entryWidget.get()
 	entryArr = entry.split()
@@ -189,8 +185,6 @@ def recvName(tokens):
 	myName = " ".join(tokens[1:])
 	printStyleMessage("Name set to: " + myName, ("sysMessage"))
 
-def quit(event):
-	current.quit()
 
 def grabFocus(event):
 	entryWidget.focus_set()
@@ -212,50 +206,5 @@ def listen(socket):
 def serverMessage(tokens):
 	printStyleMessage(" ".join(tokens[1:], ("sysMessage")))
 
-
-logging.basicConfig(filename=time.strftime("CLIENT %m-%d-%Y.log"), level=logging.INFO, format="%(asctime)s %(levelname)s LINE %(lineno)s: %(message)s")
-logger = logging.getLogger("serv")
-logger.addHandler(logging.StreamHandler())
-
-clientCommands["!help"] = helpDesk
-clientCommands["!exit"] = exit
-clientCommands["!name"] = sendName
-clientCommands["!disconnect"] = disconnect
-
-serverCommands["!serv"] = serverMessage
-serverCommands["!name"] = recvName
-serverCommands["!ping"] = 
-serverCommands["!disconnect"] = disconnect
-
-login = Tk()
-login.title("Log In")
-login.resizable(width=FALSE, height=FALSE)
-
-miscStr = StringVar("")
-nameLabel = Label(login, text="Name: ")
-serverLabel = Label(login, text="Server: ")
-nameEntry = Entry(login)
-serverEntry = Entry(login)
-miscLabel = Label(login, textvariable=miscStr)
-okayButton = Button(login, text="OK", command=proceed)
-exitButton = Button(login, text="Exit", command=login.quit)
-
-nameLabel.  grid(row=0, column=0)
-serverLabel.grid(row=1, column=0)
-nameEntry.  grid(row=0, column=1, columnspan=3)
-serverEntry.grid(row=1, column=1, columnspan=3)
-miscLabel.  grid(row=2, column=0, columnspan=4, sticky="ew")
-okayButton. grid(row=3, column=0, columnspan=2)
-exitButton. grid(row=3, column=2, columnspan=2)
-
-nameEntry.bind('<Return>', proceedOnKey)
-serverEntry.bind('<Return>', proceedOnKey)
-nameEntry.bind('<Escape>', quit)
-serverEntry.bind('<Escape>', quit)
-
-nameEntry.focus_get()
-nameEntry.focus_set()
-
-current = login
-logger.info("Starting up login window...")
-login.mainloop()
+if __name__ == '__main_':
+	proceed()
